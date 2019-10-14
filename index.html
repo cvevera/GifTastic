@@ -27,7 +27,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script>
             var character = ["Jar Jar Binks", "Luke Skywalker", "Darth Vader",]
-           
+
             // Function for displaying movie data
             function renderButtons() {
 
@@ -85,7 +85,12 @@
                             var characterImage = $("<img>");
                             // Setting the src attribute of the image to a property pulled off the result item
                             characterImage.attr("src", results[i].images.fixed_height.url);
-
+                            // characterImage.attr("src", results[i].images.original_still.url);
+                            characterImage.attr("data-still", results[i].images.original_still.url);
+                            characterImage.attr("data-animate", results[i].images.original.url);
+                            characterImage.attr("data-state", "animate");
+                            characterImage.attr("class", "gifs");
+                                console.log(characterImage)
                             // Appending the paragraph and image tag to the animalDiv
                             starWarsCharacter.append(p);
                             starWarsCharacter.append(characterImage);
@@ -94,9 +99,10 @@
                             $("#gifs").prepend(starWarsCharacter);
                         }
                     })
+
             };
-                        // This function handles events where a movie button is clicked
-                        $("#add-character").on("click", function (event) {
+            // This function handles events where a movie button is clicked
+            $("#add-character").on("click", function (event) {
                 event.preventDefault();
                 // This line grabs the input from the textbox
                 var input = $("#character-input").val().trim();
@@ -108,8 +114,26 @@
                 renderButtons();
                 console.log(character)
             });
+           function animateGif () {
+                 
+                 // The attr jQuery method allows us to get or set the value of any attribute on our HTML element
+                 var state = $(this).attr("data-state");
+                 var animate = $(this).attr("data-animate");
+                 var still = $(this).attr("data-still");
+                 // If the clicked image's state is still, update its src attribute to what its data-animate value is.
+                 // Then, set the image's data-state to animate
+                 // Else set src to the data-still value
+                 if (state === "still") {
+                     $(this).attr("src", animate);
+                     $(this).attr("data-state", "animate");
+                 } else {
+                     $(this).attr("src", still);
+                     $(this).attr("data-state", "still");
+                 }
+             };
 
             $(document).on("click", ".character-btn", displayGifInfo);
+            $(document).on("click", "#gifs", animateGif);
             renderButtons()
         </script>
 </body>
