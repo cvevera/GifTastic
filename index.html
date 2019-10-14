@@ -85,11 +85,10 @@
                             var characterImage = $("<img>");
                             // Setting the src attribute of the image to a property pulled off the result item
                             characterImage.attr("src", results[i].images.fixed_height.url);
-                            // characterImage.attr("src", results[i].images.original_still.url);
-                            characterImage.attr("data-still", results[i].images.original_still.url);
-                            characterImage.attr("data-animate", results[i].images.original.url);
-                            characterImage.attr("data-state", "animate");
-                            characterImage.attr("class", "gifs");
+                            characterImage.attr("data-still", results[i].images.fixed_height_still.url);
+                            characterImage.attr("data-animate", results[i].images.fixed_height.url);
+                            characterImage.attr("data-state", "still");
+                            characterImage.attr("id", "gifs");
                                 console.log(characterImage)
                             // Appending the paragraph and image tag to the animalDiv
                             starWarsCharacter.append(p);
