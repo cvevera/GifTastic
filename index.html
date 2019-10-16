@@ -6,135 +6,158 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>GifTastic</title>
+    <link rel="stylesheet" type="text/css" href="stylesheet.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 
 <body>
+    <header>
+        <h1>Star Wars GifTastic!</h1>
+    </header>
+    <div class="row">
+        <div class="col-8">
 
-    <form id="character-form">
-        <label for="character-input">Add a Star Wars Character!</label>
-        <input type="text" id="character-input"><br>
-
-        <!-- Button triggers new movie to be added -->
-        <input id="add-character" type="submit" value="Add a Star Wars Character!">
-    </form>
+            <div id="buttons-view"></div>
+        </div>
+        <div class="col-4">
+                <form id="character-form">
+                    <!-- <label for="character-input">Add a Star Wars Character:</label> -->
+                    <input type="text" id="character-input"><br>
+                    </form>
+                
+    
+                    <!-- Button triggers new movie to be added -->
+                    <input id="add-character" type="submit" value="Add a Star Wars Character!">
+                </div>
     </div>
-    <div id="buttons-view"></div>
-    <!-- <button data-character="Jar Jar Binks">Jar Jar</button> -->
-    <div id="gifs">
+</div>
+    <div class="row">
+        <div class="col-12">
+            <div id="gifs"></div>
+        </div>
+        
+
+            </form>
+        </div>
+    </div>
+  
 
 
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script>
-            var character = ["Jar Jar Binks", "Luke Skywalker", "Darth Vader",]
 
-            // Function for displaying movie data
-            function renderButtons() {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        var character = ["Jar Jar Binks", "Luke Skywalker", "Darth Vader", "Han Solo", "Princess Leia", "Admiral Akbar", "Rey", "Boba Fett"]
 
-                // Deleting the movies prior to adding new movies
-                // (this is necessary otherwise you will have repeat buttons)
-                $("#buttons-view").empty();
+        // Function for displaying movie data
+        function renderButtons() {
 
-                // Looping through the array of movies
-                for (var i = 0; i < character.length; i++) {
+            // Deleting the movies prior to adding new movies
+            // (this is necessary otherwise you will have repeat buttons)
+            $("#buttons-view").empty();
 
-                    // Then dynamicaly generating buttons for each movie in the array
-                    // This code $("<button>") is all jQuery needs to create the beginning and end tag. (<button></button>)
-                    var a = $("<button>");
-                    // Adding a class of movie-btn to our button
-                    a.addClass("character-btn");
-                    // Adding a data-attribute
-                    a.attr("data-name", character[i]);
-                    // Providing the initial button text
-                    a.text(character[i]);
-                    // Adding the button to the buttons-view div
-                    $("#buttons-view").append(a);
-                }
-            };
+            // Looping through the array of movies
+            for (var i = 0; i < character.length; i++) {
+
+                // Then dynamicaly generating buttons for each movie in the array
+                // This code $("<button>") is all jQuery needs to create the beginning and end tag. (<button></button>)
+                var a = $("<button>");
+                // Adding a class of movie-btn to our button
+                a.addClass("character-btn");
+                // Adding a data-attribute
+                a.attr("data-name", character[i]);
+                // Providing the initial button text
+                a.text(character[i]);
+                // Adding the button to the buttons-view div
+                $("#buttons-view").append(a);
+            }
+        };
 
 
 
-            function displayGifInfo() {
+        function displayGifInfo() {
 
-                var character = $(this).attr("data-name");
+            var character = $(this).attr("data-name");
 
-                var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
-                    character + "&api_key=gUOyes5bzalWC2SAOM63qdWpM2RyhatG&limit=10";
+            var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+                character + "&api_key=gUOyes5bzalWC2SAOM63qdWpM2RyhatG&limit=10";
 
-                $.ajax({
-                    url: queryURL,
-                    method: "GET"
+            $("#gifs").empty()
+            $.ajax({
+                url: queryURL,
+                method: "GET"
+            })
+                .then(function (response) {
+                    console.log(queryURL);
+
+                    console.log(response);
+                    // storing the data from the AJAX request in the results variable
+                    var results = response.data;
+
+                    // Looping through each result item
+                    for (var i = 0; i < results.length; i++) {
+
+                        // Creating and storing a div tag
+                        var starWarsCharacter = $("<div>");
+
+                        // Creating a paragraph tag with the result item's rating
+                        var p = $("<p>").text("Rating: " + results[i].rating);
+
+                        // Creating and storing an image tag
+                        var characterImage = $("<img>");
+                        // Setting the src attribute of the image to a property pulled off the result item
+                        characterImage.attr("src", results[i].images.fixed_height_still.url);
+                        characterImage.attr("data-still", results[i].images.fixed_height_still.url);
+                        characterImage.attr("data-animate", results[i].images.fixed_height.url);
+                        characterImage.attr("data-state", "still");
+                        characterImage.attr("id", "gifs");
+                        console.log(characterImage)
+                        // Appending the paragraph and image tag to the animalDiv
+                        starWarsCharacter.append(p);
+                        starWarsCharacter.append(characterImage);
+
+                        // Prependng the animalDiv to the HTML page in the "#gifs-appear-here" div
+                        $("#gifs").prepend(starWarsCharacter);
+                    }
                 })
-                    .then(function (response) {
-                        console.log(queryURL);
 
-                        console.log(response);
-                        // storing the data from the AJAX request in the results variable
-                        var results = response.data;
+        };
+        // This function handles events where a movie button is clicked
+        $("#add-character").on("click", function (event) {
+            event.preventDefault();
+            // This line grabs the input from the textbox
+            var input = $("#character-input").val().trim();
 
-                        // Looping through each result item
-                        for (var i = 0; i < results.length; i++) {
+            // Adding movie from the textbox to our array
+            character.push(input);
 
-                            // Creating and storing a div tag
-                            var starWarsCharacter = $("<div>");
+            // Calling renderButtons which handles the processing of our movie array
+            renderButtons();
+            console.log(character)
+        });
+        function animateGif() {
 
-                            // Creating a paragraph tag with the result item's rating
-                            var p = $("<p>").text("Rating: " + results[i].rating);
+            // The attr jQuery method allows us to get or set the value of any attribute on our HTML element
+            var state = $(this).attr("data-state");
+            var animate = $(this).attr("data-animate");
+            var still = $(this).attr("data-still");
+            // If the clicked image's state is still, update its src attribute to what its data-animate value is.
+            // Then, set the image's data-state to animate
+            // Else set src to the data-still value
+            if (state === "still") {
+                $(this).attr("src", animate);
+                $(this).attr("data-state", "animate");
+            } else {
+                $(this).attr("src", still);
+                $(this).attr("data-state", "still");
+            }
+        };
 
-                            // Creating and storing an image tag
-                            var characterImage = $("<img>");
-                            // Setting the src attribute of the image to a property pulled off the result item
-                            characterImage.attr("src", results[i].images.fixed_height.url);
-                            characterImage.attr("data-still", results[i].images.fixed_height_still.url);
-                            characterImage.attr("data-animate", results[i].images.fixed_height.url);
-                            characterImage.attr("data-state", "still");
-                            characterImage.attr("id", "gifs");
-                                console.log(characterImage)
-                            // Appending the paragraph and image tag to the animalDiv
-                            starWarsCharacter.append(p);
-                            starWarsCharacter.append(characterImage);
-
-                            // Prependng the animalDiv to the HTML page in the "#gifs-appear-here" div
-                            $("#gifs").prepend(starWarsCharacter);
-                        }
-                    })
-
-            };
-            // This function handles events where a movie button is clicked
-            $("#add-character").on("click", function (event) {
-                event.preventDefault();
-                // This line grabs the input from the textbox
-                var input = $("#character-input").val().trim();
-
-                // Adding movie from the textbox to our array
-                character.push(input);
-
-                // Calling renderButtons which handles the processing of our movie array
-                renderButtons();
-                console.log(character)
-            });
-           function animateGif () {
-                 
-                 // The attr jQuery method allows us to get or set the value of any attribute on our HTML element
-                 var state = $(this).attr("data-state");
-                 var animate = $(this).attr("data-animate");
-                 var still = $(this).attr("data-still");
-                 // If the clicked image's state is still, update its src attribute to what its data-animate value is.
-                 // Then, set the image's data-state to animate
-                 // Else set src to the data-still value
-                 if (state === "still") {
-                     $(this).attr("src", animate);
-                     $(this).attr("data-state", "animate");
-                 } else {
-                     $(this).attr("src", still);
-                     $(this).attr("data-state", "still");
-                 }
-             };
-
-            $(document).on("click", ".character-btn", displayGifInfo);
-            $(document).on("click", "#gifs", animateGif);
-            renderButtons()
-        </script>
+        $(document).on("click", ".character-btn", displayGifInfo);
+        $(document).on("click", "#gifs", animateGif);
+        renderButtons()
+    </script>
 </body>
 
 </html>
