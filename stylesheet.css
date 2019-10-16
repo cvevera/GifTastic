@@ -49,4 +49,5 @@ button:hover {
     display: flex;
     vertical-align: middle;
     flex-wrap: wrap;
+    padding: 5px;
 }
